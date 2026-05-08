@@ -37,8 +37,10 @@ http://localhost:8080
 | `/api/v1/users/*` | `basicvids_auth:8000` |
 | `/api/v1/videos/*` | `basicvids_storage:8000` |
 | `/api/v1/categories/*` | `basicvids_storage:8000` |
+| `/api/v1/channels/*` | `basicvids_channels:8000` |
 | `/auth/health` | `basicvids_auth:8000/health` |
 | `/storage/health` | `basicvids_storage:8000/health` |
+| `/channels/health` | `basicvids_channels:8000/health` |
 
 ## Adding A Microservice
 
