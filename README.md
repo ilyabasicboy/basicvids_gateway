@@ -13,14 +13,14 @@ docker network create basicvids
 Start the service containers, then start the gateway:
 
 ```bash
-cd ../basicvids_auth
-docker compose up -d
-
-cd ../basicvids_storage
-docker compose up -d
-
-cd ../basicvids_gateway
-docker compose up -d
+cd ../basicvids_auth && docker compose up -d
+cd ../basicvids_storage && docker compose up -d
+cd ../basicvids_channels && docker compose up -d
+cd ../basicvids_comments && docker compose up -d
+cd ../basicvids_engagement && docker compose up -d
+cd ../basicvids_history && docker compose up -d
+cd ../basicvids_favorites && docker compose up -d
+cd ../basicvids_gateway && docker compose up -d
 ```
 
 The gateway listens on:
@@ -32,15 +32,25 @@ http://localhost:8080
 ## Routes
 
 | Route | Service |
-| ----- | ------- |
+| --- | --- |
 | `/api/v1/auth/*` | `basicvids_auth:8000` |
 | `/api/v1/users/*` | `basicvids_auth:8000` |
+| `/api/v1/avatars/*` | `basicvids_auth:8000` |
 | `/api/v1/videos/*` | `basicvids_storage:8000` |
 | `/api/v1/categories/*` | `basicvids_storage:8000` |
+| `/api/v1/comments/*` | `basicvids_comments:8000` |
+| `/api/v1/engagement/*` | `basicvids_engagement:8000` |
+| `/api/v1/history/*` | `basicvids_history:8000` |
+| `/api/v1/favorites/*` | `basicvids_favorites:8000` |
 | `/api/v1/channels/*` | `basicvids_channels:8000` |
 | `/auth/health` | `basicvids_auth:8000/health` |
 | `/storage/health` | `basicvids_storage:8000/health` |
+| `/comments/health` | `basicvids_comments:8000/health` |
+| `/engagement/health` | `basicvids_engagement:8000/health` |
+| `/history/health` | `basicvids_history:8000/health` |
+| `/favorites/health` | `basicvids_favorites:8000/health` |
 | `/channels/health` | `basicvids_channels:8000/health` |
+| `/health` | Gateway self healthcheck |
 
 ## Adding A Microservice
 
@@ -53,19 +63,4 @@ networks:
     name: basicvids
 ```
 
-Then add an upstream and route in `nginx.conf`, for example:
-
-```nginx
-upstream comments_app {
-    server basicvids_comments:8000;
-    keepalive 32;
-}
-
-location /api/v1/comments/ {
-    proxy_pass http://comments_app;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-}
-```
+Then add an upstream and route in `nginx.conf`.
